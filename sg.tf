@@ -1,5 +1,5 @@
 # Security Group
-resource "aws_security_group" "webserver_sg" {
+resource "aws_security_group" "aws_capstone_sg" {
   vpc_id = aws_vpc.aws_capstone_vpc.id
 
   # Allow SSH inbound traffic

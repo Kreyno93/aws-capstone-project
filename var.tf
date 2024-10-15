@@ -15,3 +15,9 @@ variable "aws_availability_zone_b" {
   description = "value for the availability zone"
   default     = "us-west-2b"
 }
+
+variable "aws_instance_type_t2micro" {
+  type        = string
+  description = "value for the instance type"
+  default     = "t2.micro"
+}
