@@ -36,3 +36,6 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+
+# This is not needed for production, but is useful for testing
+userdata-for-testing.sh

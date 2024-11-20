@@ -49,16 +49,15 @@ resource "aws_lb_listener" "capstone_listener" {
   }
 }
 
-# Target Group Attachment
+# # Target Group Attachment
+# resource "aws_lb_target_group_attachment" "capstone_attachment" {
+#   target_group_arn = aws_lb_target_group.capstone_tg.arn
+#   target_id        = aws_instance.web.id
+#   port             = 80
+# }
 
-resource "aws_lb_target_group_attachment" "capstone_attachment" {
-  target_group_arn = aws_lb_target_group.capstone_tg.arn
-  target_id        = aws_instance.web.id
-  port             = 80
-}
-
-resource "aws_lb_target_group_attachment" "capstone_attachment2" {
-  target_group_arn = aws_lb_target_group.capstone_tg.arn
-  target_id        = aws_instance.web2.id
-  port             = 80
-}
+# resource "aws_lb_target_group_attachment" "capstone_attachment2" {
+#   target_group_arn = aws_lb_target_group.capstone_tg.arn
+#   target_id        = aws_instance.web2.id
+#   port             = 80
+# }

@@ -1,6 +1,6 @@
-# Security Group
-resource "aws_security_group" "aws_capstone_sg" {
-  name = "AwsCapstoneSecurityGroup"
+# Security Group for SSH
+resource "aws_security_group" "aws_ssh_sg" {
+  name   = "AwsCapstoneSecurityGroup"
   vpc_id = aws_vpc.aws_capstone_vpc.id
 
   # Allow SSH inbound traffic
@@ -10,6 +10,18 @@ resource "aws_security_group" "aws_capstone_sg" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  egress {
+    from_port = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+# Security Group for HTTP
+resource "aws_security_group" "aws_webserver_sg" {
+  name   = "AwsCapstoneSecurityGroup"
+  vpc_id = aws_vpc.aws_capstone_vpc.id
 
   # Allow HTTP inbound traffic
   ingress {
@@ -35,7 +47,7 @@ resource "aws_security_group" "aws_capstone_sg" {
 
 # Security Group for Load Balancer
 resource "aws_security_group" "aws_capstone_lb_sg" {
-  name = "AwsCapstoneLoadBalancerSG"
+  name   = "AwsCapstoneLoadBalancerSG"
   vpc_id = aws_vpc.aws_capstone_vpc.id
 
   # Allow HTTP inbound traffic
@@ -55,6 +67,6 @@ resource "aws_security_group" "aws_capstone_lb_sg" {
   }
 
   tags = {
-    Name              = "AwsCapstoneLoadBalancerSG"
+    Name = "AwsCapstoneLoadBalancerSG"
   }
 }
