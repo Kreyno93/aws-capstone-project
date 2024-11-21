@@ -12,6 +12,7 @@ resource "aws_launch_template" "launch-template" {
 
 # Auto Scaling Group
 resource "aws_autoscaling_group" "autoscaling-group" {
+  depends_on       = [aws_nat_gateway.nat]
   default_cooldown = 30
   launch_template {
     id      = aws_launch_template.launch-template.id

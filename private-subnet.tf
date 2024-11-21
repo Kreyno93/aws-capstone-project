@@ -2,7 +2,7 @@
 resource "aws_subnet" "private_subnet_1" {
   vpc_id                  = aws_vpc.aws_capstone_vpc.id
   cidr_block              = "10.0.2.0/24"
-  availability_zone       = var.aws_availablity_zone_a
+  availability_zone       = var.aws_availability_zone_a
   map_public_ip_on_launch = false
   tags = {
     Name = "PrivateSubnet1"

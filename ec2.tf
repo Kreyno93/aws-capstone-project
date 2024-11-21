@@ -12,7 +12,7 @@ data "aws_ami" "amazon_linux_2" {
 resource "aws_instance" "bastion" {
   ami                    = data.aws_ami.amazon_linux_2.id
   instance_type          = var.aws_instance_type_t2micro
-  availability_zone      = var.aws_availablity_zone_a
+  availability_zone      = var.aws_availability_zone_a
   vpc_security_group_ids = [aws_security_group.aws_ssh_sg.id]
   subnet_id              = aws_subnet.public_subnet_1.id
   key_name               = "vockey"
