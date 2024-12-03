@@ -12,12 +12,19 @@ sudo amazon-linux-extras enable mariadb10.5
 sudo yum clean metadata
 sudo yum install -y mariadb unzip
 
-# Set database variables
+# Set database variables for local testing
+# DBName="wordpress"
+# DBUser="wordpress"
+# DBPassword="admin1234"
+# DBRootPassword="rootpassword1234"
+# DBHost="localhost"
+
+# Set database variables for RDS
 DBName="wordpress"
-DBUser="wordpress"
-DBPassword="admin1234"
-DBRootPassword="rootpassword1234"
-DBHost="localhost"
+DBUser="wordpressuser"
+DBPassword="password3141!"
+DBRootPassword="rootpassword3141!"
+DBHost=$(echo "${rds_endpoint}" | sed 's/:3306//')
 
 # Start Apache server and enable it on system startup
 sudo systemctl start httpd

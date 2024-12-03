@@ -6,7 +6,7 @@ resource "aws_launch_template" "launch-template" {
   image_id               = data.aws_ami.amazon_linux_2.id
   instance_type          = "t2.micro"
   vpc_security_group_ids = [aws_security_group.aws_webserver_sg.id, aws_security_group.aws_ssh_sg.id]
-  user_data              = filebase64("userdata-for-testing.sh")
+  user_data              = base64encode(templatefile("userdata.sh", { rds_endpoint = replace(aws_db_instance.mysql.endpoint, ":3306", "") }))
   key_name               = "vockey"
 }
 
@@ -18,9 +18,9 @@ resource "aws_autoscaling_group" "autoscaling-group" {
     id      = aws_launch_template.launch-template.id
     version = "$Latest"
   }
-  desired_capacity = 1
-  min_size         = 1
-  max_size         = 2
+  desired_capacity = 2
+  min_size         = 2
+  max_size         = 3
 
   target_group_arns   = [aws_lb_target_group.capstone_tg.arn]
   vpc_zone_identifier = [aws_subnet.private_subnet_1.id, aws_subnet.private_subnet_2.id]
