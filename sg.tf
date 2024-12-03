@@ -21,7 +21,7 @@ resource "aws_security_group" "aws_ssh_sg" {
 
 # Security Group for Load Balancer
 resource "aws_security_group" "aws_capstone_lb_sg" {
-  name   = "AwsCapstoneLoadBalancerSG"
+  name   = "AWS-Capstone-LoadBalancer-SG"
   vpc_id = aws_vpc.aws_capstone_vpc.id
 
   # Allow HTTP inbound traffic
@@ -69,5 +69,28 @@ resource "aws_security_group" "aws_webserver_sg" {
   tags = {
     Name              = "AwsCapstoneWebServerSG"
     SecurityGroupName = "AwsCapstoneWebServerSG"
+  }
+}
+
+# Security Group for RDS
+resource "aws_security_group" "aws_rds_sg" {
+  name        = "AWS-Capstone-RDS-SG"
+  description = "Allow traffic to RDS"
+  vpc_id      = aws_vpc.aws_capstone_vpc.id
+
+  # Allow MySQL inbound traffic
+  ingress {
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # Allow all outbound traffic
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }
