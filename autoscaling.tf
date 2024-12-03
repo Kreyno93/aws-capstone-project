@@ -18,9 +18,9 @@ resource "aws_autoscaling_group" "autoscaling-group" {
     id      = aws_launch_template.launch-template.id
     version = "$Latest"
   }
-  desired_capacity = 2
-  min_size         = 2
-  max_size         = 3
+  desired_capacity = 2 # 1 for testing
+  min_size         = 2 # 1 for testing
+  max_size         = 3 # 2 for testing
 
   target_group_arns   = [aws_lb_target_group.capstone_tg.arn]
   vpc_zone_identifier = [aws_subnet.private_subnet_1.id, aws_subnet.private_subnet_2.id]
@@ -41,7 +41,7 @@ resource "aws_autoscaling_policy" "scale-out-policy" {
     predefined_metric_specification {
       predefined_metric_type = "ASGAverageCPUUtilization"
     }
-    target_value = 20.0 # for Testing Purpose
+    target_value = 50.0 # 20 for testing
   }
 }
 
