@@ -49,6 +49,10 @@ resource "aws_lb_listener" "capstone_listener" {
   }
 }
 
+# Forward traffic from HTTPS to HTTP
+
+
+
 # # Target Group Attachment
 # resource "aws_lb_target_group_attachment" "capstone_attachment" {
 #   target_group_arn = aws_lb_target_group.capstone_tg.arn

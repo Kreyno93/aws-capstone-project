@@ -30,15 +30,15 @@ DBHost=$(echo "${rds_endpoint}" | sed 's/:3306//')
 sudo systemctl start httpd
 sudo systemctl enable httpd
 
-# Start MariaDB service and enable it on system startup
-sudo systemctl start mariadb
-sudo systemctl enable mariadb
+# # Start MariaDB service and enable it on system startup
+# sudo systemctl start mariadb
+# sudo systemctl enable mariadb
 
 # Wait for MariaDB to fully start
 sleep 10
 
-# Set MariaDB root password
-sudo mysqladmin -u root password "$DBRootPassword"
+# # Set MariaDB root password
+# sudo mysqladmin -u root password "$DBRootPassword"
 
 # Download and install WordPress
 sudo wget http://wordpress.org/latest.tar.gz -P /var/www/html
@@ -63,8 +63,8 @@ sudo chmod 2775 /var/www/
 sudo find /var/www/ -type d -exec chmod 2775 {} \;
 sudo find /var/www/ -type f -exec chmod 0664 {} \;
 
-# Create WordPress database
-sudo echo "CREATE DATABASE IF NOT EXISTS $DBName;" | mysql -u root --password=$DBRootPassword
-sudo echo "CREATE USER IF NOT EXISTS '$DBUser'@'localhost' IDENTIFIED BY '$DBPassword';" | mysql -u root --password=$DBRootPassword
-sudo echo "GRANT ALL ON $DBName.* TO '$DBUser'@'localhost';" | mysql -u root --password=$DBRootPassword
-sudo echo "FLUSH PRIVILEGES;" | mysql -u root --password=$DBRootPassword
+# # Create WordPress database
+# sudo echo "CREATE DATABASE IF NOT EXISTS $DBName;" | mysql -u root --password=$DBRootPassword
+# sudo echo "CREATE USER IF NOT EXISTS '$DBUser'@'localhost' IDENTIFIED BY '$DBPassword';" | mysql -u root --password=$DBRootPassword
+# sudo echo "GRANT ALL ON $DBName.* TO '$DBUser'@'localhost';" | mysql -u root --password=$DBRootPassword
+# sudo echo "FLUSH PRIVILEGES;" | mysql -u root --password=$DBRootPassword

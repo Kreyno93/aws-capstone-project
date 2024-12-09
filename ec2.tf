@@ -16,6 +16,7 @@ resource "aws_instance" "bastion" {
   vpc_security_group_ids = [aws_security_group.aws_ssh_sg.id]
   subnet_id              = aws_subnet.public_subnet_1.id
   key_name               = "vockey"
+  user_data              = file("bastion-userdata.sh")
   tags = {
     Name = "AwsCapstoneBastionHost"
   }
