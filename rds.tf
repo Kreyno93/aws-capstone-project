@@ -1,4 +1,4 @@
-# Crate subnet group for Aurora Cluster
+# Create subnet group for Aurora Cluster
 resource "aws_db_subnet_group" "aurora_subnet_group" {
   name       = "aurora-subnet-group"
   subnet_ids = [aws_subnet.private_subnet_1.id, aws_subnet.private_subnet_2.id]
