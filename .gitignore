@@ -4,7 +4,7 @@ plan.out
 # .tfstate files
 *.tfstate
 *.tfstate.*
-
+alternative-version/
 # Crash log files
 crash.log
 crash.*.log
