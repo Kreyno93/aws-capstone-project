@@ -1,41 +1,95 @@
-# Local .terraform directories
+# Terraform files
 **/.terraform/*
-plan.out
-# .tfstate files
 *.tfstate
 *.tfstate.*
-alternative-version/
-# Crash log files
+*.tfplan
+*.tfplan.*
+plan.out
 crash.log
 crash.*.log
-
-# Exclude all .tfvars files, which are likely to contain sensitive data, such as
-# password, private keys, and other secrets. These should not be part of version 
-# control as they are data points which are potentially sensitive and subject 
-# to change depending on the environment.
-*.tfvars
-*.tfvars.json
-
-# Ignore override files as they are usually used to override resources locally and so
-# are not checked in
 override.tf
 override.tf.json
 *_override.tf
 *_override.tf.json
-
-# Ignore transient lock info files created by terraform apply
+.terraformrc
+terraform.rc
 .terraform.tfstate.lock.info
 .terraform.lock.*
 
-# Include override files you do wish to add to version control using negated pattern
-# !example_override.tf
+# Environment-specific tfvars (uncomment to ignore)
+# *.tfvars
+# *.tfvars.json
 
-# Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
-# example: *tfplan*
+# AWS credentials and config
+.aws/
+aws-credentials.json
 
-# Ignore CLI configuration files
-.terraformrc
-terraform.rc
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
 
-# This is not needed for production, but is useful for testing
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+alternative-version/
+
+# SSH keys
+*.pem
+*.key
+id_rsa*
+
+# Backup files
+*.backup
+*.bak
+
+# Test results
+test-results/
+coverage/
+
+# Node modules (if using any Node.js tools)
+node_modules/
+
+# Python cache (if using any Python tools)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local environment files
+.env
+.env.local
+.env.*.local
+
+# Documentation build files
+docs/_build/
+site/
+
+# Package files
+*.tar.gz
+*.zip
+*.rar
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Testing files
 userdata-for-testing.sh
