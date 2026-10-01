@@ -1,8 +1,8 @@
 
 # Security Group for SSH
 resource "aws_security_group" "aws_ssh_sg" {
-  name   = "AWS-Capstone-SSH-SG"
-  vpc_id = aws_vpc.aws_capstone_vpc.id
+  name        = "AWS-Capstone-SSH-SG"
+  vpc_id      = aws_vpc.aws_capstone_vpc.id
   description = "Allow SSH access to EC2 instances"
 }
 

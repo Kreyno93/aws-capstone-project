@@ -1,4 +1,4 @@
-# AWS Capstone Project - Scalable WordPress Infrastructure
+# AWS Capstone Project - Scalable WordPress Infrastructure (Improved)
 
 ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
 ![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)
@@ -6,305 +6,347 @@
 
 ## 🚀 Project Overview
 
-This AWS Capstone Project demonstrates the implementation of a **highly available, scalable, and secure WordPress hosting infrastructure** using **Terraform Infrastructure as Code (IaC)**. The architecture follows AWS Well-Architected Framework principles, emphasizing security, reliability, performance efficiency, cost optimization, and operational excellence.
+This is an **improved and restructured** version of the AWS Capstone Project that demonstrates the implementation of a **highly available, scalable, and secure WordPress hosting infrastructure** using **Terraform Infrastructure as Code (IaC)** following modern best practices.
 
-### 🎯 Key Features
+### 🎯 Key Improvements
 
-- **High Availability**: Multi-AZ deployment across two availability zones
-- **Auto Scaling**: Dynamic scaling based on CPU utilization
-- **Load Balancing**: Application Load Balancer for traffic distribution
-- **Security**: Private subnets for application and database tiers
-- **Infrastructure as Code**: Complete infrastructure defined in Terraform
-- **Cost Optimized**: Right-sized instances and efficient resource allocation
+- **Modular Architecture**: Organized into reusable Terraform modules
+- **Environment Management**: Separate configurations for dev, staging, and prod
+- **Enhanced Security**: Improved security groups and IAM roles
+- **Better Monitoring**: CloudWatch integration and health checks
+- **Automation Scripts**: Deployment and testing automation
+- **Documentation**: Comprehensive documentation and examples
+- **Best Practices**: Following Terraform and AWS best practices
 
-## 🏗️ Architecture Diagram
+### 🏗️ Architecture Components
 
-```
-                                    ┌─────────────────────────┐
-                                    │        Internet         │
-                                    └───────────┬─────────────┘
-                                                │
-                                    ┌───────────▼─────────────┐
-                                    │   Internet Gateway      │
-                                    │  (aws_capstone_igw)     │
-                                    └───────────┬─────────────┘
-                                                │
-┌───────────────────────────────────────────────┼───────────────────────────────────────────────┐
-│                                               │                                               │
-│                        AWS VPC (10.0.0.0/16) - AwsCapstoneVPC                              │
-│                                               │                                               │
-│    ┌─────────────────────────────────────────┬┴─────────────────────────────────────────┐    │
-│    │                                         │                                          │    │
-│    │  ┌─────────────────────────────────────────────────────────────────────────────┐  │    │
-│    │  │                Application Load Balancer (capstone-lb)                     │  │    │
-│    │  │                    Spans Public Subnets 1 & 2                             │  │    │
-│    │  └─────────────────────────────────────────────────────────────────────────────┘  │    │
-│    │                                         │                                          │    │
-│    │            us-west-2a                   │                us-west-2b               │    │
-│    │                                         │                                          │    │
-│    │  ┌─────────────────────────────────────┐│┌─────────────────────────────────────────┐ │    │
-│    │  │        Public Subnet 1              │││        Public Subnet 2                 │ │    │
-│    │  │        (10.0.1.0/24)                │││        (10.0.3.0/24)                   │ │    │
-│    │  │                                     │││                                         │ │    │
-│    │  │  ┌─────────────────────────────────┐│││                                         │ │    │
-│    │  │  │      Bastion Host               │││                                         │ │    │
-│    │  │  │      (t2.micro)                 │││                                         │ │    │
-│    │  │  └─────────────────────────────────┘│││                                         │ │    │
-│    │  │                                     │││                                         │ │    │
-│    │  │  ┌─────────────────────────────────┐│││                                         │ │    │
-│    │  │  │      NAT Gateway                │││                                         │ │    │
-│    │  │  │      + Elastic IP               │││                                         │ │    │
-│    │  │  └─────────────────────────────────┘│││                                         │ │    │
-│    │  └─────────────────────────────────────┘│└─────────────────────────────────────────┘ │    │
-│    │                                         │                                          │    │
-│    │  ┌─────────────────────────────────────┐│┌─────────────────────────────────────────┐ │    │
-│    │  │       Private Subnet 1              │││       Private Subnet 2                 │ │    │
-│    │  │       (10.0.2.0/24)                 │││       (10.0.4.0/24)                    │ │    │
-│    │  │                                     │││                                         │ │    │
-│    │  │  ┌─────────────────────────────────┐│││  ┌─────────────────────────────────┐    │ │    │
-│    │  │  │   WordPress Instance            │││  │   WordPress Instance            │    │ │    │
-│    │  │  │   (Auto Scaling Group)          │││  │   (Auto Scaling Group)          │    │ │    │
-│    │  │  │   t2.micro                      │││  │   t2.micro                      │    │ │    │
-│    │  │  └─────────────────────────────────┘│││  └─────────────────────────────────┘    │ │    │
-│    │  │                                     │││                                         │ │    │
-│    │  │  ┌─────────────────────────────────┐│││  ┌─────────────────────────────────┐    │ │    │
-│    │  │  │      RDS MySQL                  │││  │      RDS MySQL                  │    │ │    │
-│    │  │  │      (db.t3.micro)              │││  │      (Subnet Group)             │    │ │    │
-│    │  │  └─────────────────────────────────┘│││  └─────────────────────────────────┘    │ │    │
-│    │  └─────────────────────────────────────┘│└─────────────────────────────────────────┘ │    │
-│    └─────────────────────────────────────────┴──────────────────────────────────────────┘    │
-└───────────────────────────────────────────────────────────────────────────────────────────────┘
-```
+The infrastructure consists of the following modules:
 
-## 🏛️ Architecture Components
-
-### Network Infrastructure
-- **VPC**: Custom Virtual Private Cloud with CIDR `10.0.0.0/16`
-- **Multi-AZ Deployment**: Resources distributed across `us-west-2a` and `us-west-2b`
-- **Subnets**:
-  - Public Subnet 1: `10.0.1.0/24` (us-west-2a)
-  - Public Subnet 2: `10.0.3.0/24` (us-west-2b)
-  - Private Subnet 1: `10.0.2.0/24` (us-west-2a)
-  - Private Subnet 2: `10.0.4.0/24` (us-west-2b)
-
-### Compute & Scaling
-- **Application Load Balancer**: Distributes traffic across WordPress instances
-- **Auto Scaling Group**: Maintains 2-3 instances based on CPU utilization (50% threshold)
-- **Launch Template**: Automated WordPress deployment with Apache, PHP, and MySQL client
-- **Bastion Host**: Secure administrative access to private resources
-
-### Database
-- **RDS MySQL 8.0.35**: Managed database service in private subnets
-- **Instance Class**: db.t3.micro with 10GB storage
-- **High Availability**: DB Subnet Group spans multiple AZs
-
-### Security
-- **Security Groups**: Principle of least privilege access control
-- **Private Subnets**: Application and database isolation
-- **NAT Gateway**: Secure outbound internet access for private resources
-
-## 📋 Prerequisites
-
-Before deploying this infrastructure, ensure you have:
-
-### Required Tools
-- **AWS CLI** (v2.x or later) - [Installation Guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
-- **Terraform** (v5.70.0 or later) - [Installation Guide](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
-- **Git** - For cloning the repository
-
-### AWS Requirements
-- **AWS Account** with appropriate permissions
-- **AWS CLI configured** with credentials:
-  ```bash
-  aws configure
-  ```
-- **Key Pair** named "vockey" in us-west-2 region (or modify `var.tf` to use your key pair)
-- **IAM Permissions** for:
-  - EC2 (instances, security groups, load balancers)
-  - VPC (subnets, route tables, gateways)
-  - RDS (database instances, subnet groups)
-  - Auto Scaling Groups
-  - CloudWatch (for monitoring)
-
-### System Requirements
-- **Operating System**: Linux, macOS, or Windows with WSL
-- **Internet Connection**: For downloading Terraform providers and AWS resources
-
-## 🚀 Quick Start Guide
-
-### 1. Clone the Repository
-```bash
-git clone <your-repository-url>
-cd aws-capstone-project
-```
-
-### 2. Initialize Terraform
-```bash
-terraform init
-```
-
-### 3. Review and Customize Variables (Optional)
-Edit `var.tf` to customize:
-- AWS region (default: us-west-2)
-- Instance types (default: t2.micro)
-- Availability zones
-
-### 4. Plan the Deployment
-```bash
-terraform plan
-```
-Review the planned resources before applying.
-
-### 5. Deploy the Infrastructure
-```bash
-terraform apply
-```
-Type `yes` when prompted to confirm the deployment.
-
-### 6. Access Your WordPress Site
-After deployment completes (5-10 minutes):
-1. Find the ALB DNS name in the Terraform output
-2. Open the DNS name in your browser
-3. Complete WordPress setup through the web interface
-
-### 7. Administrative Access (Optional)
-To access instances via bastion host:
-```bash
-# Get bastion host public IP from AWS Console
-ssh -i vockey.pem ec2-user@<bastion-public-ip>
-
-# From bastion, access private instances
-ssh -i vockey.pem ec2-user@<private-instance-ip>
-```
-
-## 🧪 Testing the Deployment
-
-### Load Balancer Test
-Use the included test script:
-```bash
-chmod +x loadbalancertest.sh
-./loadbalancertest.sh <ALB-DNS-NAME>
-```
-
-### Health Check Verification
-- **ALB Target Group**: Check healthy targets in AWS Console
-- **Auto Scaling**: Verify instances are running in both AZs
-- **Database**: Confirm RDS instance is available
+- **Networking Module**: VPC, subnets, gateways, and routing
+- **Security Module**: Security groups and access control
+- **Database Module**: RDS MySQL with proper configuration
+- **Compute Module**: EC2 instances, Auto Scaling, and Load Balancer
+- **Monitoring Module**: CloudWatch metrics and alarms (optional)
 
 ## 📁 Project Structure
 
 ```
 aws-capstone-project/
-├── README.md                 # This file
-├── provider.tf              # AWS provider configuration
-├── var.tf                   # Variable definitions
-├── vpc.tf                   # VPC configuration
-├── public-subnet.tf         # Public subnet definitions
-├── private-subnet.tf        # Private subnet definitions
-├── igw.tf                   # Internet Gateway
-├── nat.tf                   # NAT Gateway and Elastic IP
-├── routetable.tf           # Route tables and associations
-├── sg.tf                   # Security group definitions
-├── ec2.tf                  # EC2 instance configurations
-├── alb.tf                  # Application Load Balancer
-├── autoscaling.tf          # Auto Scaling Group
-├── rds.tf                  # RDS database setup
-├── userdata.sh             # WordPress installation script
-├── bastion-userdata.sh     # Bastion host setup script
-└── loadbalancertest.sh     # Load balancer testing script
+├── README.md                    # This file
+├── terraform.tf                 # Terraform version and provider requirements
+├── providers.tf                 # Provider configurations
+├── variables.tf                 # Variable definitions
+├── locals.tf                    # Local values
+├── data.tf                      # Data sources
+├── main.tf                      # Main configuration using modules
+├── outputs.tf                   # Output definitions
+├── .gitignore                   # Git ignore rules
+│
+├── modules/                     # Terraform modules
+│   ├── networking/              # VPC, subnets, gateways
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── outputs.tf
+│   ├── security/                # Security groups
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── outputs.tf
+│   ├── database/                # RDS configuration
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── outputs.tf
+│   ├── compute/                 # EC2, ASG, ALB
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── outputs.tf
+│   └── monitoring/              # CloudWatch (optional)
+│       ├── main.tf
+│       ├── variables.tf
+│       └── outputs.tf
+│
+├── environments/                # Environment-specific configurations
+│   ├── dev/
+│   │   └── terraform.tfvars
+│   ├── staging/
+│   │   └── terraform.tfvars
+│   └── prod/
+│       └── terraform.tfvars
+│
+└── scripts/                     # Utility scripts
+    ├── deploy.sh                # Deployment automation
+    ├── test-infrastructure.sh   # Infrastructure testing
+    ├── wordpress-userdata.sh    # WordPress installation script
+    └── bastion-userdata.sh      # Bastion host setup script
 ```
 
-## 🔧 Configuration Details
+## 🚀 Quick Start Guide
 
-### Auto Scaling Configuration
-- **Desired Capacity**: 2 instances
-- **Minimum Size**: 2 instances
-- **Maximum Size**: 3 instances
-- **Scaling Policy**: Target tracking at 50% CPU utilization
-- **Cooldown Period**: 30 seconds
+### Prerequisites
 
-### Database Configuration
-- **Engine**: MySQL 8.0.35
-- **Instance Class**: db.t3.micro
-- **Storage**: 10GB allocated storage
-- **Backup**: Skip final snapshot (development environment)
-- **Security**: Deployed in private subnets
+- **AWS CLI** (v2.x or later) configured with appropriate credentials
+- **Terraform** (v1.0 or later)
+- **Git** for cloning the repository
+- **Key Pair** named "vockey" in your AWS region (or update configuration)
 
-### Load Balancer Health Checks
-- **Path**: `/` (root path)
-- **Protocol**: HTTP on port 80
-- **Healthy Threshold**: 2 consecutive successful checks
-- **Unhealthy Threshold**: 2 consecutive failed checks
-- **Interval**: 60 seconds, Timeout: 5 seconds
+### 1. Clone and Setup
 
-## 💰 Cost Optimization
+```bash
+git clone <your-repository-url>
+cd aws-capstone-project
+```
 
-This architecture is designed for cost efficiency:
+### 2. Deploy Infrastructure
 
-- **t2.micro instances**: AWS Free Tier eligible
-- **db.t3.micro RDS**: Minimal database costs
-- **Single NAT Gateway**: Reduces NAT charges
-- **No encryption**: Avoids additional charges (development use)
-- **Minimal storage**: 10GB RDS allocation
+Using the deployment script (recommended):
 
-**Estimated Monthly Cost**: $15-25 USD (excluding Free Tier benefits)
+```bash
+# Plan deployment for development environment
+./scripts/deploy.sh dev plan
+
+# Apply deployment for development environment
+./scripts/deploy.sh dev apply
+
+# Check outputs
+./scripts/deploy.sh dev output
+```
+
+Or using Terraform directly:
+
+```bash
+# Initialize Terraform
+terraform init
+
+# Plan deployment
+terraform plan -var-file="environments/dev/terraform.tfvars"
+
+# Apply deployment
+terraform apply -var-file="environments/dev/terraform.tfvars"
+```
+
+### 3. Test Infrastructure
+
+```bash
+# Run comprehensive infrastructure tests
+./scripts/test-infrastructure.sh
+```
+
+### 4. Access WordPress
+
+After deployment (5-10 minutes for complete setup):
+
+1. Get the WordPress URL from Terraform outputs
+2. Open the URL in your browser
+3. Complete WordPress setup through the web interface
+
+## 🔧 Configuration
+
+### Environment Configuration
+
+Each environment has its own configuration file in `environments/[env]/terraform.tfvars`:
+
+- **dev**: Development environment with minimal resources
+- **staging**: Staging environment for testing
+- **prod**: Production environment with enhanced security and performance
+
+### Key Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `project_name` | Name of the project | `aws-capstone-wordpress` |
+| `environment` | Environment name | `dev` |
+| `aws_region` | AWS region | `us-west-2` |
+| `instance_type` | EC2 instance type | `t2.micro` |
+| `db_instance_class` | RDS instance class | `db.t3.micro` |
+| `min_size` | Min ASG instances | `2` |
+| `max_size` | Max ASG instances | `3` |
+
+## 🛠️ Available Scripts
+
+### Deployment Script
+
+```bash
+./scripts/deploy.sh [environment] [action]
+
+# Examples:
+./scripts/deploy.sh dev plan      # Plan dev deployment
+./scripts/deploy.sh dev apply     # Apply dev deployment
+./scripts/deploy.sh prod destroy  # Destroy prod environment
+```
+
+### Testing Script
+
+```bash
+./scripts/test-infrastructure.sh
+
+# Tests include:
+# - ALB health checks
+# - WordPress response
+# - Load balancing
+# - Database connectivity
+# - Auto Scaling Group health
+```
 
 ## 🔒 Security Features
 
 ### Network Security
-- WordPress instances in private subnets (no direct internet access)
+- Private subnets for application and database tiers
 - Bastion host for secure administrative access
-- NAT Gateway for controlled outbound connectivity
+- Security groups with least privilege principles
+- NAT Gateway for controlled outbound access
 
 ### Access Control
-- Security groups implement least privilege principles
-- SSH access only through bastion host
+- IAM roles for EC2 instances
+- Security group rules for specific ports and sources
+- SSH key-based authentication
 - Database access restricted to application tier
-- HTTP/HTTPS traffic controlled through ALB
+
+### Monitoring
+- CloudWatch metrics and alarms
+- Auto Scaling based on CPU utilization
+- Health checks for load balancer targets
+- Logging for troubleshooting
+
+## 🧪 Testing
+
+The project includes comprehensive testing:
+
+### Automated Tests
+- ALB health and response tests
+- WordPress installation verification
+- Load balancing functionality
+- Database connectivity
+- Auto Scaling Group health
+- Target group health checks
+
+### Manual Testing
+- SSH access via bastion host
+- WordPress admin interface
+- Database administration
+- Performance testing
 
 ## 📊 Monitoring & Observability
 
 ### Built-in Monitoring
-- **CloudWatch Metrics**: CPU utilization for auto scaling
-- **ALB Health Checks**: Application availability monitoring
-- **RDS Monitoring**: Database performance metrics
+- CloudWatch metrics for EC2 instances
+- ALB target health monitoring
+- RDS performance metrics
+- Auto Scaling activities
 
-### Recommended Enhancements
-- CloudWatch Dashboards for centralized monitoring
-- CloudWatch Alarms for proactive alerting
-- AWS X-Ray for application tracing
+### Optional Enhancements
+- CloudWatch Dashboards
+- Custom metrics and alarms
+- Log aggregation
+- Performance Insights for RDS
+
+## 🌍 Multi-Environment Support
+
+The project supports multiple environments with different configurations:
+
+### Development Environment
+- Minimal resources for cost optimization
+- Relaxed security for development access
+- Single AZ deployment (optional)
+
+### Staging Environment
+- Production-like configuration
+- Testing and validation environment
+- Performance testing capabilities
+
+### Production Environment
+- High availability across multiple AZs
+- Enhanced security configurations
+- Monitoring and alerting
+- Backup and disaster recovery
+
+## 💰 Cost Optimization
+
+### Development Environment
+- t2.micro instances (Free Tier eligible)
+- Single NAT Gateway
+- Minimal storage allocation
+- Short backup retention
+
+### Production Environment
+- Right-sized instances based on requirements
+- Reserved Instances for cost savings
+- Automated scaling to optimize costs
+- Longer backup retention for compliance
+
+## 🔄 CI/CD Integration
+
+The project structure supports CI/CD integration:
+
+### GitHub Actions Example
+```yaml
+name: Deploy Infrastructure
+on:
+  push:
+    branches: [main]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+      - name: Deploy to staging
+        run: ./scripts/deploy.sh staging apply
+```
+
+### GitLab CI Example
+```yaml
+stages:
+  - validate
+  - plan
+  - deploy
+
+validate:
+  script:
+    - terraform init
+    - terraform validate
+
+plan:
+  script:
+    - ./scripts/deploy.sh staging plan
+
+deploy:
+  script:
+    - ./scripts/deploy.sh staging apply
+  when: manual
+```
 
 ## 🧹 Cleanup
 
-To avoid ongoing charges, destroy the infrastructure when no longer needed:
+To destroy the infrastructure:
 
 ```bash
-terraform destroy
+# Using the deployment script
+./scripts/deploy.sh dev destroy
+
+# Or using Terraform directly
+terraform destroy -var-file="environments/dev/terraform.tfvars"
 ```
-
-Type `yes` when prompted to confirm destruction.
-
-**⚠️ Warning**: This will permanently delete all resources and data. Ensure you have backups if needed.
 
 ## 🔮 Future Enhancements
 
 ### Security Improvements
 - [ ] SSL/TLS certificates with AWS Certificate Manager
-- [ ] AWS WAF for web application firewall
-- [ ] VPC Flow Logs for network monitoring
+- [ ] AWS WAF integration
+- [ ] VPC Flow Logs
 - [ ] AWS Secrets Manager for database credentials
+- [ ] AWS Systems Manager Session Manager
 
 ### Performance & Scalability
-- [ ] Amazon CloudFront CDN integration
-- [ ] ElastiCache for WordPress caching
+- [ ] CloudFront CDN integration
+- [ ] ElastiCache for caching
 - [ ] RDS Multi-AZ deployment
-- [ ] Application-level auto scaling policies
+- [ ] Application-level auto scaling
 
 ### Operational Excellence
-- [ ] CloudWatch Dashboards and Alarms
-- [ ] AWS Systems Manager for patch management
 - [ ] Automated backup strategies
 - [ ] Blue/Green deployment pipeline
+- [ ] Infrastructure drift detection
+- [ ] Cost optimization recommendations
 
 ### Multi-Region Setup
 - [ ] Cross-region replication
@@ -315,47 +357,58 @@ Type `yes` when prompted to confirm destruction.
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+3. Make your changes following the project structure
+4. Test your changes with the testing script
+5. Commit your changes (`git commit -m 'Add amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
 
-## 📄 License
+### Development Guidelines
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+- Follow Terraform best practices
+- Use consistent naming conventions
+- Add appropriate comments and documentation
+- Test changes in development environment first
+- Update documentation for new features
 
 ## 🆘 Troubleshooting
 
 ### Common Issues
 
-**Issue**: Terraform apply fails with "InvalidKeyPair.NotFound"
-**Solution**: Ensure the "vockey" key pair exists in us-west-2 region, or update `var.tf` with your key pair name.
+**Issue**: Terraform initialization fails
+**Solution**: Check AWS credentials and region configuration
+
+**Issue**: Key pair not found error
+**Solution**: Create the key pair in AWS or update the configuration
 
 **Issue**: WordPress shows database connection error
-**Solution**: Check RDS instance status and security group rules. Ensure the RDS endpoint is accessible from WordPress instances.
+**Solution**: Check RDS instance status and security group rules
 
 **Issue**: Cannot access WordPress site
-**Solution**: Verify ALB is healthy, target group has healthy targets, and security groups allow HTTP traffic.
-
-**Issue**: Auto Scaling not working
-**Solution**: Check CloudWatch metrics, scaling policies, and ensure instances are properly registered with the target group.
+**Solution**: Verify ALB health checks and target group status
 
 ### Getting Help
 
-- Check AWS CloudWatch logs for detailed error messages
-- Review Terraform state file for resource status
-- Use AWS Console to verify resource configurations
-- Check security group rules and network ACLs
+1. Check the troubleshooting section
+2. Review CloudWatch logs for detailed error messages
+3. Use the testing script to identify issues
+4. Check AWS Console for resource status
+5. Open an issue in the repository
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 📞 Support
 
 For questions or issues:
-1. Check the troubleshooting section above
-2. Review AWS documentation for specific services
-3. Open an issue in this repository
-4. Contact AWS Support for account-specific issues
+- Check the troubleshooting section
+- Review AWS documentation
+- Open an issue in this repository
+- Contact the DevOps team
 
 ---
 
-**Built with ❤️ using AWS and Terraform**
+**Built with ❤️ using AWS, Terraform, and modern DevOps practices**
 
-*This project demonstrates modern cloud architecture principles and serves as a foundation for scalable web applications on AWS.*
+*This improved project demonstrates enterprise-grade cloud architecture principles and serves as a foundation for scalable, maintainable infrastructure on AWS.*
